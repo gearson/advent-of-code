@@ -51,7 +51,7 @@ def test_solve(input_example: str, expected: int) -> None:
     assert solve(parse(input_example)) == expected
 
 
-def main(puzzle_input):
+def main(puzzle_input) -> int:
     """Solve the puzzle for the given input"""
     solution = solve(parse(puzzle_input))
     print(f"Solution Part 1: {solution}")
