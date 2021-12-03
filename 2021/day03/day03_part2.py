@@ -15,21 +15,29 @@ def parse(puzzle_input: str) -> List:
 
 def solve(data: List) -> int:
     """solve puzzle"""
-    position_list = []
-    most_common_bit = []
+    oxy_list = data
     for idx in range(len(data[0])):
-        pos = [line[idx] for line in data]
-        position_list.append(pos)
-    for position in position_list:
-        most_common_dict = Counter(position)
-        if most_common_dict['0'] > most_common_dict['1']:
-            most_common_bit.append(0)
+        pos = [line[idx] for line in oxy_list]
+        if Counter(pos)["1"] >= Counter(pos)["0"]:
+            oxy_list = [line for line in oxy_list if line[idx] == "1"]
         else:
-            most_common_bit.append(1)
-    epsilon = [(int(bit)-1)*-1 for bit in most_common_bit]
-    epsilon_int = int("".join(str(x) for x in epsilon), 2)
-    gamma_int = int("".join(str(x) for x in most_common_bit), 2)
-    return gamma_int * epsilon_int
+            oxy_list = [line for line in oxy_list if line[idx] == "0"]
+        if len(oxy_list) == 1:
+            break
+
+    carbon_list = data
+    for idx in range(len(data[0])):
+        pos = [line[idx] for line in carbon_list]
+        if Counter(pos)["1"] < Counter(pos)["0"]:
+            carbon_list = [line for line in carbon_list if line[idx] == "1"]
+        else:
+            carbon_list = [line for line in carbon_list if line[idx] == "0"]
+        if len(carbon_list) == 1:
+            break
+
+    oxy_int = int("".join(str(x) for x in oxy_list[0]), 2)
+    carbon_int = int("".join(str(x) for x in carbon_list[0]), 2)
+    return oxy_int * carbon_int
 
 
 INPUT_EXAMPLE = """\
@@ -46,7 +54,7 @@ INPUT_EXAMPLE = """\
 00010
 01010
 """
-OUTPUT_EXAMPLE = 198
+OUTPUT_EXAMPLE = 230
 
 
 @pytest.mark.parametrize(
