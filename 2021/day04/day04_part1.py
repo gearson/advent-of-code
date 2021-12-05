@@ -1,13 +1,12 @@
-from typing import List
+from typing import List, Tuple
 import pytest
 from aocd.models import Puzzle
-import numpy as np
 
 puzzle = Puzzle(year=2021, day=4)  # TODO: adjust day!
 puzzle_input = puzzle.input_data
 
 
-def parse(puzzle_input: str) -> List:
+def parse(puzzle_input: str) -> Tuple:
     """parse input"""
     drawn_numbers = [int(draw) for draw in puzzle_input.splitlines()[0].split(",")]
     cards = [
@@ -15,13 +14,42 @@ def parse(puzzle_input: str) -> List:
         for card_line in INPUT_EXAMPLE.splitlines()[2:]
         if card_line.strip()
     ]
-
+    cards = [cards[idx : idx + 5] for idx in range(0, len(cards), 5)]  # type: ignore
     return drawn_numbers, cards
 
 
-def solve(data: List) -> int:
+def check_row(row: List):
+    return all(item == "X" for item in row)
+
+
+def check_column(card):
+    transposed_card = list(zip(*card))
+    for row in transposed_card:
+        if check_row(row):
+            return True
+
+
+def solve(data: Tuple) -> int:
     """solve puzzle"""
-    # return solution
+    cards = data[1]
+    for number in data[0]:
+        for card in cards:
+            for row in card:
+                for idx, item in enumerate(row):
+                    if item == number:
+                        row[idx] = "X"
+                if check_row(row):
+                    card_sum = sum(
+                        sum(filter(lambda i: isinstance(i, int), row)) for row in card
+                    )
+                    return card_sum * number
+                elif check_column(card):
+                    card_sum = sum(
+                        sum(filter(lambda i: isinstance(i, int), row)) for row in card
+                    )
+                    print(card)
+                    print(number)
+                    return card_sum * number
 
 
 INPUT_EXAMPLE = """\
