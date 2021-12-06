@@ -35,25 +35,30 @@ def check_column(card):
             return True
 
 
+def is_winner(card):
+    if check_rows(card) or check_column(card):
+        return True
+
+
 def solve(data: Tuple) -> int:
     """solve puzzle"""
     cards = data[1]
+    last_winner = -1
+    seen = set()
     for number in data[0]:
-        for card in cards:
+        for card_index, card in enumerate(cards):
             for row in card:
                 for idx, item in enumerate(row):
                     if item == number:
                         row[idx] = "X"
-            if check_rows(card):
+            if is_winner(card) and card_index not in seen:
                 card_sum = sum(
                     sum(filter(lambda i: isinstance(i, int), row)) for row in card
                 )
-                return card_sum * number
-            if check_column(card):
-                card_sum = sum(
-                    sum(filter(lambda i: isinstance(i, int), row)) for row in card
-                )
-                return card_sum * number
+                last_winner = card_sum * number
+                seen.add(card_index)
+
+    return last_winner
 
 
 INPUT_EXAMPLE = """\
@@ -77,7 +82,7 @@ INPUT_EXAMPLE = """\
 22 11 13  6  5
  2  0 12  3  7
 """
-OUTPUT_EXAMPLE = 4512
+OUTPUT_EXAMPLE = 1924
 
 
 @pytest.mark.parametrize(
