@@ -36,6 +36,21 @@ def solve(data: List) -> int:
         elif line[1] == line[3]:
             for x in range(min(line[0], line[2]), max(line[0], line[2]) + 1):
                 points[x, line[1]] += 1
+        # diagonals
+        else:
+            if line[0] < line[2]:
+                x_d = 1
+            else:
+                x_d = -1
+            if line[1] < line[3]:
+                y_d = 1
+            else:
+                y_d = -1
+            x, y = line[0], line[1]
+            while (x, y) != (line[2] + x_d, line[3] + y_d):
+                points[(x, y)] += 1
+                x, y = x + x_d, y + y_d
+
     count = 0
     for coordinate, counter in points.most_common():
         if counter > 1:
@@ -56,7 +71,7 @@ INPUT_EXAMPLE = """\
 0,0 -> 8,8
 5,5 -> 8,2
 """
-OUTPUT_EXAMPLE = 5
+OUTPUT_EXAMPLE = 12
 
 
 @pytest.mark.parametrize(

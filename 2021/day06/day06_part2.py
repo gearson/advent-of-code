@@ -1,4 +1,5 @@
 from typing import List
+from collections import Counter
 import pytest
 from aocd.models import Puzzle
 
@@ -15,25 +16,21 @@ def parse(puzzle_input: str) -> List:
 def solve(data: List) -> int:
     """solve puzzle"""
     days = 0
-    while days != 80:
-        new_borns = 0
-        for idx, fish in enumerate(data):
-            if fish == 0:
-                data[idx] = 6
-                new_borns += 1
-            else:
-                data[idx] = fish - 1
+    fish_counter = Counter(fish for fish in data)
+    while days != 256:
+        fish_counter_helper = Counter({8: fish_counter[0], 6: fish_counter[0]})
+        for fish_status, number in fish_counter.items():
+            if fish_status >= 1:
+                fish_counter_helper[fish_status - 1] += number
+        fish_counter = fish_counter_helper
         days += 1
-        data.extend([8] * new_borns)
-        print(days)
-
-    return len(data)
+    return sum(fish_counter.values())
 
 
 INPUT_EXAMPLE = """\
 3,4,3,1,2
 """
-OUTPUT_EXAMPLE = 5934
+OUTPUT_EXAMPLE = 26984457539
 
 
 @pytest.mark.parametrize(
