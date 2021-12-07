@@ -19,7 +19,11 @@ def solve(data: List) -> int:
     for alignment_position in range(0, max_distance):
         cost_position = []
         for crab_position in data:
-            fuel_cost = abs(crab_position - alignment_position)
+            fuel_cost = (
+                abs(crab_position - alignment_position)
+                * (abs(crab_position - alignment_position) + 1)
+                // 2
+            )
             cost_position.extend([fuel_cost])
         all_costs.extend([sum(cost_position)])
     return min(all_costs)
@@ -28,7 +32,7 @@ def solve(data: List) -> int:
 INPUT_EXAMPLE = """\
 16,1,2,0,4,2,7,1,2,14
 """
-OUTPUT_EXAMPLE = 37
+OUTPUT_EXAMPLE = 168
 
 
 @pytest.mark.parametrize(
